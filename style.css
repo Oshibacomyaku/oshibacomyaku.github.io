@@ -2,31 +2,35 @@
 html {
     font-family:"ヒラギノ角ゴ Pro W3″,”ＭＳ Ｐゴシック",sans-serif;
     font-family: 'BIZ UDPMincho', serif; 
-    font-size: 140%
+    font-size: 140%;
+    
     }
 
     body{
         width: 100%;
         max-width: 1280px;
         margin: auto;
+        background-color: #0d0d0d;
+        color:rgb(243, 247, 251);
     }
 
     header{
         font-size: 150%;
         margin: 20px;
-        text-align:center
+        text-align:center;
+        font-family: 'Zen Maru Gothic', sans-serif;
     }
 
     .profile{
         text-align:center
-        
     }
 
     img {
         border-radius: 500px;
         width: 500;
-        height: 400px;
-        margin:30px
+        height: 350px;
+        margin-top:30px;
+        margin-bottom:30px;
     }
 
     .profile .prof_st{
@@ -48,6 +52,7 @@ html {
     h2 {
         margin-bottom:0px;
         margin-top:30px;
+        margin-left:10px;
     }
 
     .works .links {
@@ -78,16 +83,17 @@ html {
 
     .linka{
         text-decoration: none; 
-        color: #000000; 
-        background-image: linear-gradient(90deg, #00ff84,#009dff96,#ffffff00); /* 線の色 */
+        color: rgb(243, 247, 251); 
+        background-image: linear-gradient(90deg,rgb(243, 247, 251),rgb(243, 247, 251)); /* 線の色 */
         background-repeat: no-repeat;
-        background-position: left bottom; /* 線の起点 */
-        background-size: 70% 1px; /* 線縦幅　横幅 */
+        background-position: center bottom; /* 線の起点 */
+        background-size: 50% 1px; /* 線縦幅　横幅 */
         transition: 0.3s; /* アニメーション実行時間 */
         }
         
     .linka:hover{
-        background-size: 120% 2px; 
+        background-size: 100% 1px; 
         /*color:#009dff;*/
-        background-image: linear-gradient(90deg, #00ff84,#009dff96,#ffffff00)
+        color: rgb(255, 111, 135); 
+        background-image: linear-gradient(90deg,rgb(243, 247, 251),rgb(243, 247, 251))
         }
