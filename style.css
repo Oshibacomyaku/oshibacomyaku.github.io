@@ -2,7 +2,7 @@
 html {
     font-family:"ヒラギノ角ゴ Pro W3″,”ＭＳ Ｐゴシック",sans-serif;
     font-family: 'BIZ UDPMincho', serif; 
-    font-size: 140%;
+    font-size: 120%;
     
     }
 
@@ -33,10 +33,6 @@ html {
         margin-bottom:30px;
     }
 
-    .profile .prof_st{
-        width:100%;
-    }  
-
     ul {
         list-style-type: none;
     }
@@ -62,6 +58,11 @@ html {
         display: flex;
         -webkit-justify-content: flex-start;
         justify-content: flex-start;
+    }
+
+    .profile{
+        padding-left: 0;
+        margin-left: 0;
     }
 
     .links{
