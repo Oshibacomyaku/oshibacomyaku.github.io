@@ -1,0 +1,275 @@
+/* お柴鉱脈 official — dark minimal */
+
+:root {
+  --bg: #0a0a0a;
+  --text: #f0eeeb;
+  --text-muted: #9a9690;
+  --text-faint: #5c5954;
+  --accent: #e8e4de;
+  --accent-hover: #ffffff;
+  --line: #242220;
+  --font-sans: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic UI", sans-serif;
+  --max: 40rem;
+  --space: clamp(1.25rem, 4vw, 2.5rem);
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-feature-settings: "palt" 1;
+  line-height: 1.8;
+  color: var(--text);
+  background: var(--bg);
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  text-underline-offset: 0.2em;
+  transition: color 0.15s ease;
+}
+
+a:hover {
+  color: var(--accent-hover);
+}
+
+a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.wrap {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: var(--space) var(--space) 4rem;
+}
+
+/* —— header —— */
+
+.site-header {
+  margin-bottom: 3.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.site-avatar {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  margin: 0 0 1.75rem;
+  border-radius: 0.5rem;
+  object-fit: cover;
+}
+
+.site-identity-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+  text-align: center;
+}
+
+.site-title {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.75rem, 5.5vw, 2.125rem);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  line-height: 1.4;
+}
+
+.site-title-en {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: lowercase;
+  color: var(--text-muted);
+}
+
+.site-role {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+
+.site-contact {
+  margin: 0.5rem 0 0;
+  font-size: 0.8125rem;
+}
+
+.site-contact a {
+  color: var(--text);
+  letter-spacing: 0.03em;
+}
+
+.site-contact a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* —— social —— */
+
+.social {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.35rem 0;
+  margin-top: 1.75rem;
+  padding: 0;
+  list-style: none;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+}
+
+.social li {
+  display: flex;
+  align-items: center;
+}
+
+.social li + li::before {
+  content: "·";
+  margin-right: 0.65rem;
+  color: var(--text-faint);
+  pointer-events: none;
+}
+
+.social a {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.social a:hover {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* —— sections —— */
+
+.section {
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  margin: 0 0 1.25rem;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+/* —— work entries —— */
+
+.works {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.work {
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.work:first-child {
+  padding-top: 0;
+}
+
+.work-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.55;
+}
+
+.work-title .work-meta {
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.work-meta {
+  margin: 0.3rem 0 0.55rem;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
+.work-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0;
+  margin: 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  line-height: 1.65;
+}
+
+.work-links a {
+  position: relative;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.work-links a:not(:last-child) {
+  margin-right: 1.35rem;
+}
+
+.work-links a:not(:last-child)::after {
+  content: "/";
+  position: absolute;
+  right: -0.75rem;
+  color: var(--text-faint);
+  pointer-events: none;
+}
+
+.work-links a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.work--event .work-title {
+  font-weight: 400;
+}
+
+.work-date {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-faint);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+}
+
+/* —— footer —— */
+
+.site-footer {
+  margin-top: 4rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.6875rem;
+  color: var(--text-faint);
+  letter-spacing: 0.1em;
+}
+
