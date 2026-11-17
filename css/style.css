@@ -237,6 +237,7 @@ h1, h2, h3, p, ol, ul, dl, dd {
 }
 
 .row-links {
+  align-self: center;   /* sit in the middle of the row, whether the links take one line or two */
   display: flex;
   flex-wrap: wrap;
   gap: 0.15rem 0.9rem;
