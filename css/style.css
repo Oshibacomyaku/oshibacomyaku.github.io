@@ -231,6 +231,7 @@ h1, h2, h3, p, ol, ul, dl, dd {
 }
 
 .row-kind {
+  align-self: center;   /* same line as the links next to it */
   font-family: var(--font-mono);
   font-size: 0.75rem;
   color: var(--sky);
@@ -356,6 +357,7 @@ h1, h2, h3, p, ol, ul, dl, dd {
   .row-kind {
     grid-column: 2;
     grid-row: 1;
+    align-self: baseline;   /* on phones it sits next to the date, not the links */
     text-align: right;
   }
 
