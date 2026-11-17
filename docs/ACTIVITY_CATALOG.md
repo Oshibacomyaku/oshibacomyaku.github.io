@@ -232,3 +232,14 @@
 |------|------|
 | 2026-05-18 | 初版（公開Web調査） |
 | 2026-05-18 | [仮公式サイト](https://oshibacomyaku.github.io/) 反映 ＋ 本人追記（コンピ3・文学1・編曲1・DJ/ライブ4）をマージ |
+| 2026-11-17 | 2026年下半期の活動5件を裏取りしてサイトに反映（下記） |
+
+### 2026-11-17 追加分（すべて🌐確認済み）
+
+| 日付 | 項目 | 役割 | 出典 |
+|------|------|------|------|
+| 2026-08-16 | 成人向合同誌『erŌudon』（C108 二日目 東ウ-56b） | 小説「サンダル」寄稿 | [Ōudon Official](https://oudonooudon.wixsite.com/-udon-official) / [BOOTH](https://ooudon.booth.pm/items/8727332) / [電子版](https://ooudon.booth.pm/items/8727671) |
+| 2026-09-26 | JUCY BOOK RAVE（下北沢SPREAD） | DJ（表記「DJ・LIVE」） | [AVYSS](https://avyss-magazine.com/2026/09/12/75758/) |
+| 2026-10-25 | Ōudon 2nd EP『Ōudon2』（M3-2026秋 C-15ab） | M6「サンダル」作詞・作曲・ミックス／M1・M2・M5・M6・M7 編曲 | [Ōudon Official](https://oudonooudon.wixsite.com/-udon-official) / [BOOTH](https://ooudon.booth.pm/items/9027796) |
+| 2026-11-08 | ZINE『インターネットの踊り場』（文学フリマ東京43、可ラッカ） | エッセイ寄稿 | [BOOTH](https://booth.pm/ja/items/9132981) |
+| 2026-11-08 | 演奏会「わたしのまち・青葉」（仙台、屋外） | 出演 | 本人X告知（会場名・告知URLは未確認） |
