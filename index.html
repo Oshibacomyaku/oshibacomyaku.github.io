@@ -10,10 +10,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600&family=IBM+Plex+Mono:wght@400&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="icon" href="images/icon.png" type="image/png">
   <link rel="apple-touch-icon" href="images/icon.png">
-  <link rel="stylesheet" href="css/style.css?v=6">
+  <link rel="stylesheet" href="css/style.css?v=13">
+  <script>
+    /* hero draw-in runs only when motion is welcome; without this class the image just shows */
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.classList.add("draw-intro");
+  </script>
+  <script src="js/hero-draw.js?v=9" defer></script>
 </head>
 <body>
   <header class="hero">
+    <canvas class="hero-draw" aria-hidden="true"></canvas>
     <img
       class="hero-art"
       src="images/hero-1920.jpg"
@@ -29,7 +35,7 @@
       <a class="strip" href="#profile">Profile</a>
     </nav>
     <div class="hero-id">
-      <h1 class="hero-name"><span class="strip">お柴鉱脈</span></h1>
+      <h1 class="hero-name"><span class="strip"><span class="kana">お</span>柴鉱脈</span></h1>
       <p class="hero-en"><span class="strip">Oshibacomyaku</span></p>
       <p class="hero-role"><span class="strip">コンポーザー / ボカロP</span></p>
       <ul class="hero-links" aria-label="Links">
