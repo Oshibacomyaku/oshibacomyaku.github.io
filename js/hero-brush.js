@@ -21,7 +21,14 @@
   if (!ctx) return;
 
   const SAMPLE = 4;            // colour lookup grid, in css px
-  const FADE = 0.018;          // share of the strokes erased each frame
+  const FADE = 0.018;          // share of the strokes erased per frame (on average)
+  // The canvas keeps alpha in whole steps of 1/255. Erasing 1.8% every frame rounds to
+  // nothing once a line is faint, so lines got stuck at 25/255 (~10%) and then vanished
+  // at once when the canvas was cleared. Erasing the same amount every 2 frames gets
+  // stuck at 14/255 (5.5%) after ~2.6s; every 6 frames went lower but the 10 steps a
+  // second showed as judder. That last trace is faded out with CSS, never cleared at once.
+  const FADE_EVERY = 2;
+  const SETTLE = 160;          // frames after the last line until the trace has settled (~2.7s)
   const TURN = 0.05;           // how quickly a thrown line gives in to the flow, per frame
   const GLOW = 0.42;           // the colour is pulled this far toward white, so the trail reads over the art
   let src = null, W = 0, H = 0, geo = null, colours = null, cw = 0;
@@ -76,14 +83,19 @@
     });
   };
 
-  let running = false, idle = 0, last = 0;
+  let running = false, idle = 0, last = 0, fadeDue = 0;
+  let fading = false, fadeToken = 0;   // the closing CSS fade, and a counter that only goes up
   const frame = (now) => {
     const k = last ? Math.min((now - last) / 16.7, 3) : 1;
     last = now;
-    ctx.globalCompositeOperation = "destination-out";
-    ctx.fillStyle = `rgba(0,0,0,${FADE * k})`;
-    ctx.fillRect(0, 0, W, H);
-    ctx.globalCompositeOperation = "source-over";
+    fadeDue += k;
+    if (fadeDue >= FADE_EVERY) {
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.fillStyle = `rgba(0,0,0,${1 - Math.pow(1 - FADE, fadeDue)})`;
+      ctx.fillRect(0, 0, W, H);
+      ctx.globalCompositeOperation = "source-over";
+      fadeDue = 0;
+    }
     const { dx, dy, L } = geo;
     for (let n = ps.length - 1; n >= 0; n--) {
       const p = ps[n];
@@ -109,12 +121,30 @@
       p.life -= k;
       if (p.life <= 0 || p.x < -20 || p.y < -20 || p.x > W + 20 || p.y > H + 20) ps.splice(n, 1);
     }
-    // keep fading for a while after the last stroke, then wipe the faint 8-bit leftovers
+    // keep fading for a while after the last stroke, then let the faint leftovers
+    // (at most 14/255) fade out with CSS and clear the canvas once it is invisible
     idle = ps.length ? 0 : idle + 1;
-    if (idle > 240) { ctx.clearRect(0, 0, W, H); running = false; last = 0; return; }
+    if (idle > SETTLE) {
+      running = false; last = 0;
+      fading = true;
+      const token = ++fadeToken;
+      cv.style.transition = "opacity 1.2s ease-out";
+      cv.style.opacity = "0";
+      setTimeout(() => {
+        if (token !== fadeToken) return;   // painting started again meanwhile
+        fading = false;
+        ctx.clearRect(0, 0, W, H);
+        cv.style.transition = "none";
+        cv.style.opacity = "";
+      }, 1250);
+      return;
+    }
     requestAnimationFrame(frame);
   };
-  const wake = () => { if (!running && geo) { running = true; idle = 0; requestAnimationFrame(frame); } };
+  const wake = () => {
+    if (fading) { fading = false; fadeToken++; cv.style.transition = "none"; cv.style.opacity = ""; }
+    if (!running && geo) { running = true; idle = 0; requestAnimationFrame(frame); }
+  };
 
   // pointer position on the canvas (it moves with the parallax, so measure it each time)
   const at = (e) => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
@@ -124,7 +154,7 @@
     const [x, y] = at(e);
     if (px !== null) {
       // a few particles per stretch of movement, spread along the path
-      const d = Math.hypot(x - px, y - py), n = Math.min(6, Math.ceil(d / 8));
+      const d = Math.hypot(x - px, y - py), n = Math.min(3, Math.ceil(d / 16));  // about half as many as before
       if (d > 0) {
         const ux = (x - px) / d, uy = (y - py) / d, boost = Math.min(d / 12, 3);
         for (let s = 1; s <= n; s++) spawn(px + (x - px) * s / n, py + (y - py) * s / n, 1, ux, uy, boost);
