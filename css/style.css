@@ -276,21 +276,41 @@ h1, h2, h3, p, ol, ul, dl, dd {
 
 /* —— new release pointer in the hero —— */
 
+/* Japanese falls back to Zen Kaku Gothic New (not the device's own monospace font),
+   so the glyph edges below are the same on every device. */
 .hero-new {
   margin-bottom: 0.9rem;
-  font-family: var(--font-mono);
-  font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+  font-family: "IBM Plex Mono", var(--font-jp);
+  font-size: clamp(0.8125rem, 1.7vw, 1rem);
   letter-spacing: 0.02em;
 }
 
+/* Snug sky band over the ink only, like the name below. Measured from a 100px render
+   against the text box: 『 reaches 0.184em below its top, 』 0.195em above its bottom,
+   「1」 starts 0.051em in, 「↓」 ends 0.101em before the end (incl. letter-spacing). */
 .hero-new .strip {
-  display: inline-block;
-  padding: 0.35em 0.7em;
-  background: var(--sky);
+  position: relative;
+  z-index: 0;
+  margin-left: -0.051em;   /* the band's left edge lines up with the name's */
+  padding: 0;
+  background: none;
   color: var(--strip-text);
 }
 
+.hero-new .strip::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0.184em 0.101em 0.195em 0.051em;
+  background: var(--sky);
+  transition: background-color 0.18s ease;
+}
+
 .hero-new .strip:hover {
+  background: none;
+}
+
+.hero-new .strip:hover::before {
   background: var(--strip-bg);
 }
 
@@ -336,26 +356,30 @@ h1, h2, h3, p, ol, ul, dl, dd {
 
 .feature-info {
   container-type: inline-size;   /* the title is sized to this column, not to the window */
+  --title-size: min(3.25rem, 7.5cqi);
 }
 
-/* The title always fits its column on one line: its ink is 13.11em wide, so at 7.5% of
-   the column per em it fills 98% of it (measured from 280px to 700px columns). */
+/* The title spans its column exactly, like the rule under it: the first glyph's ink
+   starts at the column's left edge and the last one's ends at its right edge.
+   The line is pulled out by the glyphs' side bearings and justified, so the leftover
+   width (the text fills ~96.5% at 7.5% of the column per em) goes between the letters.
+   Ink of 「マウンテン・オブ・フェイズ」 in Zen Kaku Gothic New 500 with palt, measured
+   from a 150px/300px render: 「マ」 starts 0.117em in, 「ズ」 ends 0.004em before its box;
+   0.8536em above / 0.0352em below the baseline (content area 1.1635 / 0.2885). */
 .feature-title {
-  font-size: min(2.75rem, 7.5cqi);
+  margin: 0 -0.004em 0 -0.117em;
+  font-size: var(--title-size);
   font-weight: 500;
-  letter-spacing: 0.02em;
   line-height: 1.35;
   white-space: nowrap;
+  text-align: justify;
+  text-align-last: justify;
 }
 
-/* Snug white band, same idea as the hero name. Ink of 「マウンテン・オブ・フェイズ」
-   in Zen Kaku Gothic New 500 with palt, measured from a 150px/300px render:
-   0.8536em above / 0.0352em below the baseline (content area 1.1635 / 0.2885),
-   「マ」 starts 0.117em in, 「ズ」 ends 0.024em before the box (incl. letter-spacing). */
+/* snug white band over the ink only, same idea as the hero name */
 .feature-title .strip {
   position: relative;
   z-index: 0;
-  margin-left: -0.117em;   /* the ink lines up with the column edge */
   padding: 0;
   background: none;
 }
@@ -364,15 +388,27 @@ h1, h2, h3, p, ol, ul, dl, dd {
   content: "";
   position: absolute;
   z-index: -1;
-  inset: 0.31em 0.024em 0.253em 0.117em;
+  inset: 0.31em 0.004em 0.253em 0.117em;
   background: var(--strip-bg);
 }
 
+/* like Oshibacomyaku under the hero name: white on a black band, biting a little into
+   the title band, set in a little from its right edge. The band's bottom edge sits
+   0.253em - (1.452 - 1.35)/2 = 0.202em of the title size above the title's box. */
 .feature-en {
-  margin-top: 0.6rem;
-  font-family: var(--font-head);
-  font-size: clamp(1rem, 2vw, 1.25rem);
-  font-weight: 500;
+  position: relative;
+  z-index: 1;
+  margin-top: calc(var(--title-size) * -0.202 - 0.5em);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+  text-align: right;
+  padding-right: 0.75em;  /* set in a little from the band's right edge */
+}
+
+.feature-en .strip {
+  background: var(--bg);
   color: var(--text);
 }
 
