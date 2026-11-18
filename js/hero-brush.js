@@ -22,6 +22,7 @@
 
   const SAMPLE = 4;            // colour lookup grid, in css px
   const FADE = 0.018;          // share of the strokes erased each frame
+  const TURN = 0.05;           // how quickly a thrown line gives in to the flow, per frame
   const GLOW = 0.42;           // the colour is pulled this far toward white, so the trail reads over the art
   let src = null, W = 0, H = 0, geo = null, colours = null, cw = 0;
 
@@ -46,18 +47,32 @@
   };
 
   const ps = [];
-  const spawn = (x, y) => {
+  // spread: how far from the pointer a particle may be born, in multiples of the base radius
+  // (ux, uy): the way it is thrown at first — the cursor's heading; without one it flies
+  // outward from the pointer (a tap). Either way it gets a little random turn.
+  const spawn = (x, y, spread = 1, ux = 0, uy = 0, boost = 0) => {
     if (!colours || ps.length > 600) return;
+    const L = geo.L;
+    // born anywhere in a disc around the pointer (sqrt keeps the disc evenly filled)
+    const a = Math.random() * Math.PI * 2, r = Math.sqrt(Math.random()) * Math.max(24, 16 * L) * spread;
+    x += Math.cos(a) * r; y += Math.sin(a) * r;
+    if (!ux && !uy) { ux = Math.cos(a); uy = Math.sin(a); }
+    const turn = (Math.random() - 0.5) * 0.9, ct = Math.cos(turn), st = Math.sin(turn);
+    [ux, uy] = [ux * ct - uy * st, ux * st + uy * ct];
     const i = ((Math.min(Math.max(y, 0), H - 1) / SAMPLE | 0) * cw + (Math.min(Math.max(x, 0), W - 1) / SAMPLE | 0)) * 4;
     const j = () => (Math.random() - 0.5) * 24;
     const c = (v) => Math.min(255, Math.max(0, v + (255 - v) * GLOW + j())) | 0;
-    const L = geo.L;
     ps.push({
       x, y,
       colour: `rgb(${c(colours[i])},${c(colours[i + 1])},${c(colours[i + 2])})`,
-      w: (1.4 + Math.random() * 2.4) * L,
-      sp: (1.0 + Math.random() * 1.4) * L,
-      life: 60 + Math.random() * 110,
+      w: (0.9 + Math.random() * 3.2) * L,
+      sp: (0.6 + Math.random() * 2.2) * L,
+      ux, uy,
+      boost: boost * (0.5 + Math.random()) * L,   // extra speed from a fast stroke, dies away
+      life: 40 + Math.random() * 150,
+      // each line leans off the flow by its own angle and keeps drifting, so they fan out
+      bend: (Math.random() - 0.5) * 1.2,
+      drift: (Math.random() - 0.5) * 0.03,
     });
   };
 
@@ -72,8 +87,18 @@
     const { dx, dy, L } = geo;
     for (let n = ps.length - 1; n >= 0; n--) {
       const p = ps[n];
-      const [cx, sy] = F.dirAt((p.x - dx) / L, (p.y - dy) / L);
-      const v = p.sp * k * (0.3 + Math.min(p.life, 40) / 40);  // eases off as it dies
+      const [fx, fy] = F.dirAt((p.x - dx) / L, (p.y - dy) / L);
+      p.bend += p.drift * k;
+      const cb = Math.cos(p.bend), sb = Math.sin(p.bend);
+      // steer from the thrown heading toward the (bent) flow, a little each frame
+      const t = Math.min(1, TURN * k);
+      p.ux += (fx * cb - fy * sb - p.ux) * t;
+      p.uy += (fx * sb + fy * cb - p.uy) * t;
+      const m = Math.hypot(p.ux, p.uy) || 1;
+      p.ux /= m; p.uy /= m;
+      const cx = p.ux, sy = p.uy;
+      p.boost *= Math.pow(0.94, k);
+      const v = (p.sp * (0.3 + Math.min(p.life, 40) / 40) + p.boost) * k;  // eases off as it dies
       ctx.strokeStyle = p.colour;
       ctx.lineWidth = p.w;
       ctx.beginPath();
@@ -100,7 +125,10 @@
     if (px !== null) {
       // a few particles per stretch of movement, spread along the path
       const d = Math.hypot(x - px, y - py), n = Math.min(6, Math.ceil(d / 8));
-      for (let s = 1; s <= n; s++) spawn(px + (x - px) * s / n + (Math.random() - 0.5) * 6, py + (y - py) * s / n + (Math.random() - 0.5) * 6);
+      if (d > 0) {
+        const ux = (x - px) / d, uy = (y - py) / d, boost = Math.min(d / 12, 3);
+        for (let s = 1; s <= n; s++) spawn(px + (x - px) * s / n, py + (y - py) * s / n, 1, ux, uy, boost);
+      }
     }
     px = x; py = y;
     wake();
@@ -109,10 +137,7 @@
   hero.addEventListener("pointerdown", (e) => {
     if (e.pointerType === "mouse" || !geo || e.target.closest("a")) return;
     const [x, y] = at(e);
-    for (let s = 0; s < 40; s++) {
-      const a = Math.random() * Math.PI * 2, r = Math.random() * 28;
-      spawn(x + Math.cos(a) * r, y + Math.sin(a) * r);
-    }
+    for (let s = 0; s < 50; s++) spawn(x, y, 1.8);
     wake();
   }, { passive: true });
 
