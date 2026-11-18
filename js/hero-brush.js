@@ -72,7 +72,7 @@
     ps.push({
       x, y,
       colour: `rgb(${c(colours[i])},${c(colours[i + 1])},${c(colours[i + 2])})`,
-      w: (0.9 + Math.random() * 3.2) * L,
+      w: (1.1 + Math.random() * 1.9) * L,        // 1.1 to 3.0 units wide (was 0.9 to 4.1)
       sp: (0.6 + Math.random() * 2.2) * L,
       ux, uy,
       boost: boost * (0.5 + Math.random()) * L,   // extra speed from a fast stroke, dies away
