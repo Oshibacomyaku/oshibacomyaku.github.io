@@ -434,6 +434,9 @@ h1, h2, h3, p, ol, ul, dl, dd {
 }
 
 .feature-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
   margin-top: 1.75rem;
   font-family: var(--font-mono);
   font-size: 0.875rem;
