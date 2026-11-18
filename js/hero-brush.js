@@ -141,10 +141,17 @@
     wake();
   }, { passive: true });
 
+  // Phones fire "resize" whenever the address bar slides in or out during a scroll, but
+  // the hero (100svh) keeps its size then. Rebuilding would wipe the canvas and the lines
+  // mid-stroke, so only rebuild when the hero really changes size (rotation, window resize).
   let resizeTimer = 0;
   addEventListener("resize", () => {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => { ps.length = 0; setup(); }, 200);
+    resizeTimer = setTimeout(() => {
+      if (hero.clientWidth === W && hero.clientHeight === H) return;
+      ps.length = 0;
+      setup();
+    }, 200);
   }, { passive: true });
 
   const ready = async () => {
