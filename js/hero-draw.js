@@ -53,18 +53,29 @@
     const ctx = cv.getContext("2d");
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const W = hero.clientWidth, H = hero.clientHeight;
-    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const PW = Math.round(W * dpr), PH = Math.round(H * dpr);
+    cv.width = PW; cv.height = PH;
+
+    // Strokes are drawn in plain white on a scratch layer, then the artwork is laid
+    // into them (source-in) and the layer is stamped onto the canvas. One image draw
+    // per frame instead of a pattern per stroke: WebKit (all iOS browsers) renders
+    // pattern strokes very slowly, which froze the intro on the first frame.
+    const layer = document.createElement("canvas");
+    layer.width = PW; layer.height = PH;
+    const lc = layer.getContext("2d");
+    if (!lc) return finish();
+    lc.setTransform(dpr, 0, 0, dpr, 0, 0);
+    lc.lineCap = "round"; lc.lineJoin = "round";
+    lc.strokeStyle = "#fff";
 
     // same placement as the <img>: object-fit: cover, object-position: 50% 40%
     const iw = src.width, ih = src.height;
     const sc = Math.max(W / iw, H / ih), dx = (W - iw * sc) * 0.5, dy = (H - ih * sc) * 0.4;
     const L = iw * sc / 700; // css px per logical unit of the artwork
-    const pat = ctx.createPattern(src, "no-repeat");
-    if (!pat || !pat.setTransform) return finish();
-    pat.setTransform(new DOMMatrix().translate(dx, dy).scale(sc));
-    ctx.strokeStyle = pat;
-    ctx.lineCap = "round";
+
+    // widths are grouped into 12% steps so each group is one path and one stroke call
+    const WQ = Math.log(1.12);
+    const bucketOf = (w) => Math.round(Math.log(w / L) / WQ);
 
     // Strokes are born in a field 15% larger than the screen on every side, so lines
     // flow in from off-screen and the edges get painted too. Count scales with that area.
@@ -75,38 +86,52 @@
     const spawn = (p) => {
       p.x = Math.random() * AW - MX; p.y = Math.random() * AH - MY;
       p.life = p.life0 = (22 + Math.random() * 40) * (1 + LGROW * prog);
-      p.w = (1.6 + Math.random() * 2.6) * L * (1 + WSTART * (1 - prog) ** 1.5);
+      p.b = bucketOf((1.6 + Math.random() * 2.6) * L * (1 + WSTART * (1 - prog) ** 1.5));
       p.sp = (1.2 + Math.random() * 1.4) * L;
       return p;
     };
     const ps = Array.from({ length: N }, () => spawn({}));
 
-    let t0 = 0, last = 0, faded = false;
+    let t0 = 0, last = 0, faded = false, slow = 0;
     const frame = (now) => {
       if (!t0) { t0 = now; last = now; }
-      const k = Math.min((now - last) / 16.7, 3); // frames worth of movement since last paint
+      const dt = now - last;
+      const k = Math.min(dt / 16.7, 3); // frames worth of movement since last paint
       last = now;
       prog = Math.min((now - t0) / DURATION, 1);
       if (!faded && now - t0 >= FADE_AT) { faded = true; root.classList.add("drawn"); }
+      // a device that still can't keep up gets the plain image instead of a slideshow
+      if (dt > 150 && ++slow >= 3) { cv.remove(); return finish(); }
 
       const g = 0.1 + 3.0 * (1 - prog) ** 3;     // whole drawing: ~3x at first, down to 0.1x
       const active = Math.round(N * Math.min(1, 0.15 + prog * 1.6)); // starts sparse, fills in
+      const paths = new Map();
       for (let n = 0; n < active; n++) {
         const p = ps[n];
         const v = p.sp * g * (0.08 + 2.1 * (Math.max(p.life, 0) / p.life0) ** 1.5) * k; // each line: ~2.2x at birth, 0.08x at the end
         const steps = Math.min(8, Math.max(1, Math.ceil(v / (3 * L))));       // smooth curves when fast, capped for speed
-        ctx.lineWidth = p.w;
-        ctx.beginPath();
-        ctx.moveTo(p.x, p.y);
+        let path = paths.get(p.b);
+        if (!path) paths.set(p.b, path = new Path2D());
+        path.moveTo(p.x, p.y);
         for (let s = 0; s < steps; s++) {
           const [cx, sy] = dirAt((p.x - dx) / L, (p.y - dy) / L);
           p.x += cx * v / steps; p.y += sy * v / steps;
-          ctx.lineTo(p.x, p.y);
+          path.lineTo(p.x, p.y);
         }
-        ctx.stroke();
         p.life -= k;
         if (p.life < 0 || p.x < -MX - 40 || p.y < -MY - 40 || p.x > W + MX + 40 || p.y > H + MY + 40) spawn(p);
       }
+
+      lc.globalCompositeOperation = "source-over";
+      lc.clearRect(0, 0, W, H);
+      for (const [b, path] of paths) {
+        lc.lineWidth = L * Math.exp(b * WQ);
+        lc.stroke(path);
+      }
+      lc.globalCompositeOperation = "source-in";
+      lc.drawImage(src, dx, dy, iw * sc, ih * sc);
+      ctx.drawImage(layer, 0, 0);
+
       if (prog < 1) requestAnimationFrame(frame);
       else {
         root.classList.add("drawn");
