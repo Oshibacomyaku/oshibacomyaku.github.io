@@ -263,6 +263,180 @@ h1, h2, h3, p, ol, ul, dl, dd {
   z-index: 2;
 }
 
+/* —— new release pointer in the hero —— */
+
+.hero-new {
+  margin-bottom: 0.9rem;
+  font-family: var(--font-mono);
+  font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+  letter-spacing: 0.02em;
+}
+
+.hero-new .strip {
+  display: inline-block;
+  padding: 0.35em 0.7em;
+  background: var(--sky);
+  color: var(--strip-text);
+}
+
+.hero-new .strip:hover {
+  background: var(--strip-bg);
+}
+
+/* —— feature: a full-width band for the newest release ——
+   The deep blue is taken from the jacket's sky, fading into the page black. */
+
+.feature {
+  padding: clamp(4rem, 10vw, 7rem) 0 clamp(3rem, 8vw, 5rem);
+  background: linear-gradient(180deg, #12304a 0%, #0a1a28 45%, var(--bg) 100%);
+  scroll-margin-top: 0;
+}
+
+.feature-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(1.75rem, 4vw, 3.5rem);
+  align-items: start;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.feature-art {
+  position: sticky;         /* the jacket stays in view while the track list scrolls by */
+  top: 2rem;
+  margin: 0;
+}
+
+.feature-art img {
+  display: block;
+  width: 100%;
+  height: auto;
+  box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.45);
+}
+
+.feature-label {
+  margin-bottom: 0.9rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: var(--sky);
+}
+
+.feature-info {
+  container-type: inline-size;   /* the title is sized to this column, not to the window */
+}
+
+/* The title always fits its column on one line: its ink is 13.11em wide, so at 7.5% of
+   the column per em it fills 98% of it (measured from 280px to 700px columns). */
+.feature-title {
+  font-size: min(2.75rem, 7.5cqi);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+/* Snug white band, same idea as the hero name. Ink of 「マウンテン・オブ・フェイズ」
+   in Zen Kaku Gothic New 500 with palt, measured from a 150px/300px render:
+   0.8536em above / 0.0352em below the baseline (content area 1.1635 / 0.2885),
+   「マ」 starts 0.117em in, 「ズ」 ends 0.024em before the box (incl. letter-spacing). */
+.feature-title .strip {
+  position: relative;
+  z-index: 0;
+  margin-left: -0.117em;   /* the ink lines up with the column edge */
+  padding: 0;
+  background: none;
+}
+
+.feature-title .strip::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0.31em 0.024em 0.253em 0.117em;
+  background: var(--strip-bg);
+}
+
+.feature-en {
+  margin-top: 0.6rem;
+  font-family: var(--font-head);
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.feature-facts {
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--text);
+}
+
+.feature-facts > div {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: 1rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px dotted var(--line);
+}
+
+.feature-facts dt {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-faint);
+  padding-top: 0.15rem;
+}
+
+.feature-facts dd {
+  font-size: 0.9375rem;
+}
+
+.tracklist {
+  counter-reset: track;
+  margin-top: 1.75rem;
+  padding: 0;
+  list-style: none;
+}
+
+.tracklist li {
+  counter-increment: track;
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  align-items: baseline;
+  padding: 0.35rem 0;
+}
+
+.tracklist li::before {
+  content: counter(track, decimal-leading-zero);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-faint);
+}
+
+.t-jp {
+  font-size: 0.9375rem;
+}
+
+.t-en {
+  grid-column: 2;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+}
+
+.feature-links {
+  margin-top: 1.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+}
+
+.feature-links .strip {
+  display: inline-block;
+  padding: 0.5em 0.9em;
+}
+
+.feature-links .strip:hover {
+  background: var(--sky);
+}
+
 /* —— layout —— */
 
 .wrap {
@@ -485,6 +659,18 @@ h1, h2, h3, p, ol, ul, dl, dd {
   .hero-nav {
     left: var(--gutter);
     justify-content: flex-start;
+  }
+
+  .feature-inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .feature-art {
+    position: static;
+  }
+
+  .hero-new-date {
+    display: none;          /* keeps the pointer on one line; the band below has the date */
   }
 }
 

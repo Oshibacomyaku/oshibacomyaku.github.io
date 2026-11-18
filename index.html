@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600&family=IBM+Plex+Mono:wght@400&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="icon" href="images/icon.png" type="image/png">
   <link rel="apple-touch-icon" href="images/icon.png">
-  <link rel="stylesheet" href="css/style.css?v=15">
+  <link rel="stylesheet" href="css/style.css?v=17">
   <script>
     /* hero draw-in runs only when motion is welcome; without this class the image just shows */
     if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.classList.add("draw-intro");
@@ -36,6 +36,7 @@
       <a class="strip" href="#profile">Profile</a>
     </nav>
     <div class="hero-id">
+      <p class="hero-new"><a class="strip" href="#new">1st Album『マウンテン・オブ・フェイズ』<span class="hero-new-date">2026.11.28 </span>↓</a></p>
       <h1 class="hero-name"><span class="strip"><span class="kana">お</span>柴鉱脈</span></h1>
       <p class="hero-en"><span class="strip">Oshibacomyaku</span></p>
       <p class="hero-role"><span class="strip">コンポーザー / ボカロP</span></p>
@@ -51,10 +52,54 @@
     </div>
   </header>
 
+  <section class="feature" id="new" aria-labelledby="new-heading">
+    <div class="feature-inner">
+      <figure class="feature-art">
+        <img src="images/mop-1200.jpg" srcset="images/mop-720.jpg 720w, images/mop-1200.jpg 1200w"
+             sizes="(max-width: 44rem) 100vw, 50vw" width="1200" height="1200" loading="lazy"
+             alt="アルバム『マウンテン・オブ・フェイズ』のジャケット">
+      </figure>
+      <div class="feature-info">
+        <p class="feature-label">1st Album</p>
+        <h2 id="new-heading" class="feature-title"><span class="strip">マウンテン・オブ・フェイズ</span></h2>
+        <p class="feature-en">Mountain of Phase</p>
+        <dl class="feature-facts">
+          <div><dt>Release</dt><dd>2026.11.28 配信</dd></div>
+          <div><dt>CD</dt><dd>ボーマス64　B33・34 で頒布</dd></div>
+          <div><dt>Mastering</dt><dd>とーず</dd></div>
+          <div><dt>Photography</dt><dd>いちいいず</dd></div>
+        </dl>
+        <ol class="tracklist">
+          <li><span class="t-jp">山の位相</span><span class="t-en">Phase of Mountain</span></li>
+          <li><span class="t-jp">地点</span><span class="t-en">Point</span></li>
+          <li><span class="t-jp">アンリアル・エンジン</span><span class="t-en">Unreal Engine 5</span></li>
+          <li><span class="t-jp">ハローワールド</span><span class="t-en">Hello World</span></li>
+          <li><span class="t-jp">今は隣で</span><span class="t-en">With You Next To Me</span></li>
+          <li><span class="t-jp">空隙から</span><span class="t-en">From the Vacancy</span></li>
+          <li><span class="t-jp">歩幅</span><span class="t-en">Stride</span></li>
+          <li><span class="t-jp">ぼくらの地元ーク</span><span class="t-en">Our Hometown Talk</span></li>
+          <li><span class="t-jp">季節の隠す星(interlude)</span><span class="t-en">The Primal Scene of the Basin the Boy Saw</span></li>
+          <li><span class="t-jp">mother</span><span class="t-en">mother</span></li>
+          <li><span class="t-jp">パッキーマオ</span><span class="t-en">Drunkard</span></li>
+        </ol>
+        <p class="feature-links"><a class="strip" href="https://music.apple.com/jp/album/mountain-of-phase/6835028314">Apple Music Pre-Add</a></p>
+      </div>
+    </div>
+  </section>
+
   <main class="wrap">
     <section class="section" id="latest" aria-labelledby="latest-heading">
       <h2 id="latest-heading" class="section-title">Latest</h2>
       <ol class="index index--latest">
+        <li class="row">
+          <p class="row-no">2026.11.28</p>
+          <div class="row-main">
+            <h3 class="row-title">マウンテン・オブ・フェイズ</h3>
+            <p class="row-meta">1st Album（CD：ボーマス64 B33・34）</p>
+          </div>
+          <p class="row-kind">Release</p>
+          <p class="row-links"><a href="#new">Detail</a> <a href="https://music.apple.com/jp/album/mountain-of-phase/6835028314">Apple Music Pre-Add</a></p>
+        </li>
         <li class="row">
           <p class="row-no">2026.11.08</p>
           <div class="row-main">
@@ -88,6 +133,14 @@
     <section class="section" id="music" aria-labelledby="music-heading">
       <h2 id="music-heading" class="section-title">Music</h2>
       <ol class="index">
+        <li class="row">
+          <p class="row-no">2026.11.28</p>
+          <div class="row-main">
+            <h3 class="row-title">マウンテン・オブ・フェイズ</h3>
+            <p class="row-meta">1st Album（CD：ボーマス64 B33・34）</p>
+          </div>
+          <p class="row-links"><a href="#new">Detail</a> <a href="https://music.apple.com/jp/album/mountain-of-phase/6835028314">Apple Music Pre-Add</a></p>
+        </li>
         <li class="row">
           <p class="row-no">2026.10.25</p>
           <div class="row-main">
