@@ -362,7 +362,7 @@ h1, h2, h3, p, ol, ul, dl, dd {
   font-family: var(--font-head);
   font-size: clamp(1rem, 2vw, 1.25rem);
   font-weight: 500;
-  color: var(--text-muted);
+  color: var(--text);
 }
 
 .feature-facts {
@@ -381,7 +381,7 @@ h1, h2, h3, p, ol, ul, dl, dd {
 .feature-facts dt {
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  color: var(--text-faint);
+  color: var(--text);
   padding-top: 0.15rem;
 }
 
@@ -480,7 +480,7 @@ h1, h2, h3, p, ol, ul, dl, dd {
   font-family: var(--font-mono);
   font-size: 0.75rem;
   font-variant-numeric: tabular-nums;
-  color: var(--text-faint);
+  color: var(--text);
 }
 
 .row-title {
@@ -517,7 +517,7 @@ h1, h2, h3, p, ol, ul, dl, dd {
   gap: 0.15rem 0.9rem;
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  color: var(--text-muted);
+  color: var(--text);
 }
 
 .row-links a {
