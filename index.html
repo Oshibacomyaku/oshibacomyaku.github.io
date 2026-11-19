@@ -16,26 +16,24 @@
     if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.classList.add("draw-intro");
   </script>
   <script src="js/hero-field.js?v=1" defer></script>
-  <script src="js/hero-draw.js?v=12" defer></script>
-  <script src="js/hero-brush.js?v=10" defer></script>
+  <script src="js/hero-draw.js?v=13" defer></script>
+  <script src="js/hero-brush.js?v=11" defer></script>
   <script src="js/hero-scroll.js?v=2" defer></script>
   <script src="js/row-preview.js?v=1" defer></script>
 </head>
 <body>
   <header class="hero">
     <canvas class="hero-draw" aria-hidden="true"></canvas>
-    <picture>
-      <!-- WebP is 31-41% smaller at the same fidelity; JPEG stays as the fallback -->
-      <source type="image/webp" srcset="images/hero-1280.webp 1280w, images/hero-1920.webp 1920w, images/hero-2560.webp 2560w" sizes="100vw">
-      <img
-        class="hero-art"
-        src="images/hero-1920.jpg"
-        srcset="images/hero-1280.jpg 1280w, images/hero-1920.jpg 1920w, images/hero-2560.jpg 2560w"
-        sizes="100vw"
-        fetchpriority="high"
-        alt=""
-      >
-    </picture>
+    <!-- JPEG on purpose: with the WebP versions the intro and the brush colours broke on
+         iPhone (both read the artwork's pixels through createImageBitmap) -->
+    <img
+      class="hero-art"
+      src="images/hero-1920.jpg"
+      srcset="images/hero-1280.jpg 1280w, images/hero-1920.jpg 1920w, images/hero-2560.jpg 2560w"
+      sizes="100vw"
+      fetchpriority="high"
+      alt=""
+    >
     <nav class="hero-nav" aria-label="Sections">
       <a class="strip" href="#latest">Latest</a>
       <a class="strip" href="#music">Music</a>
