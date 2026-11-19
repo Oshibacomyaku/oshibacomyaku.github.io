@@ -7,17 +7,21 @@
   const hero = document.querySelector(".hero");
   if (!hero || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-  let ticking = false;
+  // Below the hero the value stays capped, so writing it again would only make the
+  // browser recheck the hero's styles on every scroll frame while reading the lists.
+  let ticking = false, lastY = -1, h = hero.offsetHeight || 1;
   const update = () => {
     ticking = false;
-    const h = hero.offsetHeight || 1;
-    const y = Math.min(Math.max(window.scrollY, 0), h);
+    const y = Math.round(Math.min(Math.max(window.scrollY, 0), h));
+    if (y === lastY) return;
+    lastY = y;
     hero.style.setProperty("--sy", y + "px");
     hero.style.setProperty("--hp", (y / h).toFixed(4));
   };
+  const remeasure = () => { h = hero.offsetHeight || 1; lastY = -1; update(); };
   addEventListener("scroll", () => {
     if (!ticking) { ticking = true; requestAnimationFrame(update); }
   }, { passive: true });
-  addEventListener("resize", update, { passive: true });
+  addEventListener("resize", remeasure, { passive: true });
   update();
 })();

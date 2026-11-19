@@ -51,6 +51,8 @@
     lc.setTransform(dpr, 0, 0, dpr, 0, 0);
     lc.lineCap = "round"; lc.lineJoin = "round";
     lc.strokeStyle = "#fff";
+    // the decoded image and the scratch layer are only needed while drawing
+    const release = () => { src.close(); layer.width = layer.height = 0; };
 
     // same placement as the <img>: object-fit: cover, object-position: 50% 40%
     const iw = src.width, ih = src.height;
@@ -85,7 +87,7 @@
       prog = Math.min((now - t0) / DURATION, 1);
       if (!faded && now - t0 >= FADE_AT) { faded = true; root.classList.add("drawn"); }
       // a device that still can't keep up gets the plain image instead of a slideshow
-      if (dt > 150 && ++slow >= 3) { cv.remove(); return finish(); }
+      if (dt > 150 && ++slow >= 3) { release(); cv.remove(); return finish(); }
 
       const g = 0.1 + 3.0 * (1 - prog) ** 3;     // whole drawing: ~3x at first, down to 0.1x
       const active = Math.round(N * Math.min(1, 0.15 + prog * 1.6)); // starts sparse, fills in
@@ -119,6 +121,7 @@
       if (prog < 1) requestAnimationFrame(frame);
       else {
         root.classList.add("drawn");
+        release();
         setTimeout(() => cv.remove(), Math.max(0, FADE_AT + 1900 - DURATION));
       }
     };

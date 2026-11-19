@@ -16,7 +16,7 @@
   const cv = document.createElement("canvas");
   cv.className = "hero-brush";
   cv.setAttribute("aria-hidden", "true");
-  img.after(cv);
+  (img.closest("picture") || img).after(cv);
   const ctx = cv.getContext("2d");
   if (!ctx) return;
 
@@ -31,15 +31,16 @@
   const SETTLE = 160;          // frames after the last line until the trace has settled (~2.7s)
   const TURN = 0.05;           // how quickly a thrown line gives in to the flow, per frame
   const GLOW = 0.42;           // the colour is pulled this far toward white, so the trail reads over the art
-  let src = null, W = 0, H = 0, geo = null, colours = null, cw = 0;
+  let W = 0, H = 0, geo = null, colours = null, cw = 0, sized = false;
 
-  const setup = () => {
-    if (!src) return;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  // Reads the artwork once: where it sits and a small grid of its colours. The decoded
+  // full-size image is released straight away (it is 6.5MB on a phone, 26MB on a retina
+  // laptop); it is only decoded again if the hero really changes size.
+  const setup = async () => {
+    let src;
+    try { src = await createImageBitmap(img); } catch (e) { return; }
     W = hero.clientWidth; H = hero.clientHeight;
-    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.lineCap = "round"; ctx.lineJoin = "round";
+    sized = false; cv.width = cv.height = 0;
     // same placement as the <img>: object-fit: cover, object-position: 50% 40%
     const sc = Math.max(W / src.width, H / src.height);
     geo = { sc, dx: (W - src.width * sc) * 0.5, dy: (H - src.height * sc) * 0.4, L: src.width * sc / 700 };
@@ -51,6 +52,17 @@
     const oc = off.getContext("2d");
     oc.drawImage(src, geo.dx / SAMPLE, geo.dy / SAMPLE, src.width * sc / SAMPLE, src.height * sc / SAMPLE);
     colours = oc.getImageData(0, 0, cw, ch).data;
+    src.close();
+  };
+
+  // The drawing surface is only allocated when someone first draws.
+  const ensureCanvas = () => {
+    if (sized) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.lineCap = "round"; ctx.lineJoin = "round";
+    sized = true;
   };
 
   const ps = [];
@@ -58,7 +70,7 @@
   // (ux, uy): the way it is thrown at first — the cursor's heading; without one it flies
   // outward from the pointer (a tap). Either way it gets a little random turn.
   const spawn = (x, y, spread = 1, ux = 0, uy = 0, boost = 0) => {
-    if (!colours || ps.length > 600) return;
+    if (!colours || ps.length > 300) return;
     const L = geo.L;
     // born anywhere in a disc around the pointer (sqrt keeps the disc evenly filled)
     const a = Math.random() * Math.PI * 2, r = Math.sqrt(Math.random()) * Math.max(24, 16 * L) * spread;
@@ -122,7 +134,7 @@
       if (p.life <= 0 || p.x < -20 || p.y < -20 || p.x > W + 20 || p.y > H + 20) ps.splice(n, 1);
     }
     // keep fading for a while after the last stroke, then let the faint leftovers
-    // (at most 14/255) fade out with CSS and clear the canvas once it is invisible
+    // (at most 14/255) fade out with CSS and free the canvas once it is invisible
     idle = ps.length ? 0 : idle + 1;
     if (idle > SETTLE) {
       running = false; last = 0;
@@ -133,7 +145,7 @@
       setTimeout(() => {
         if (token !== fadeToken) return;   // painting started again meanwhile
         fading = false;
-        ctx.clearRect(0, 0, W, H);
+        sized = false; cv.width = cv.height = 0;   // nothing left to show: hand the memory back
         cv.style.transition = "none";
         cv.style.opacity = "";
       }, 1250);
@@ -143,7 +155,7 @@
   };
   const wake = () => {
     if (fading) { fading = false; fadeToken++; cv.style.transition = "none"; cv.style.opacity = ""; }
-    if (!running && geo) { running = true; idle = 0; requestAnimationFrame(frame); }
+    if (!running && geo) { ensureCanvas(); running = true; idle = 0; requestAnimationFrame(frame); }
   };
 
   // pointer position on the canvas (it moves with the parallax, so measure it each time)
@@ -184,10 +196,6 @@
     }, 200);
   }, { passive: true });
 
-  const ready = async () => {
-    try { src = await createImageBitmap(img); } catch (e) { return; }
-    setup();
-  };
-  if (img.complete && img.naturalWidth) ready();
-  else img.addEventListener("load", ready, { once: true });
+  if (img.complete && img.naturalWidth) setup();
+  else img.addEventListener("load", setup, { once: true });
 })();
